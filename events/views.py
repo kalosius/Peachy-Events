@@ -9,8 +9,48 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 import csv
 
-# Generate PDF files for venues
+from django.http import FileResponse
+import io
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
 
+
+# Import Pagination Stuff
+from django.core.paginator import Paginator
+
+# Generate PDF files for venues
+def venue_pdf(request):
+    # Create Bytestream buffer
+    buf = io.BytesIO()
+    # create canvas
+    c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
+    # Create a text Object
+    textob = c.beginText()
+    textob.setTextOrigin(inch, inch)
+    textob.setFont('Helvetica', 14)
+
+    # Designate the Model
+    venues = Venue.objects.all()
+    # Create a blank list
+    lines = []
+
+    for venue in venues:
+        lines.append(venue.name)
+        lines.append(venue.address)
+        lines.append(venue.zip_code)
+        lines.append(venue.phone)
+        lines.append(venue.web)
+        lines.append(venue.email_address)
+        lines.append(" ")
+
+    c.drawText(textob)
+    c.showPage()
+    c.save()
+    buf.seek(0)
+
+    return FileResponse(buf, as_attachment=True, filename='venues.pdf')
+    
 # Generate Text File Venue List
 def venue_csv(request):
     response  = HttpResponse(content_type='text/csv')
@@ -108,8 +148,19 @@ def show_venue(request, venue_id):
 
 
 def list_venues(request):
-    venue_list = Venue.objects.all().order_by('name')
-    return render(request, 'events/venues.html', {'venue_list':venue_list})
+    # venue_list = Venue.objects.all().order_by('name')
+    # venue_list = Venue.objects.all().order_by('?')  #this orders randomly
+    venue_list = Venue.objects.all()
+
+    # Setup Pagination
+    p = Paginator(Venue.objects.all(), 2)
+    page = request.GET.get('page')
+    venues = p.get_page(page)
+
+
+
+    
+    return render(request, 'events/venues.html', {'venue_list':venue_list, 'venues':venues})
 
 
 def add_venue(request):
