@@ -6,12 +6,31 @@ from . models import Event, Venue
 from .forms import VenueForm, EventForm
 
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
+
+# Generate Text File Venue List
+def venue_text(request):
+    response  = HttpResponse(content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename=venues.txt'
+    # Designate the Model
+    venues = Venue.objects.all()
+    # Create a blank list
+    lines = []
+    # Loop through  and output
+    for venue in venues:
+        lines.append(f'{venue.name}\n{venue.address}\n{venue.zip_code}\n{venue.email_address}\n{venue.web}')
+    # Manual lines
+    # lines = ["Thhis is something\n", "This is Line Two\n", "This is line 3\n"]
+    response.writelines(lines)
+    return response
+
 
 # Delete an venue
 def delete_venue(request, venue_id):
     venue  = Venue.objects.get(pk=venue_id)
     venue.delete()
     return redirect('list-venues')
+
 
 # Delete an event
 def delete_event(request, event_id):
@@ -43,6 +62,7 @@ def add_event(request):
 
     return render(request, 'events/add_event.html', {'form':form, 'submitted':submitted})
 
+
 def update_venue(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
     form = VenueForm(request.POST or None, instance=venue)
@@ -61,7 +81,6 @@ def search_venues(request):
         return render(request, 'events/search_venues.html', {})
 
 
-
 def show_venue(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
     return render(request, 'events/show_venue.html', {'venue':venue})
@@ -70,7 +89,6 @@ def show_venue(request, venue_id):
 def list_venues(request):
     venue_list = Venue.objects.all().order_by('name')
     return render(request, 'events/venues.html', {'venue_list':venue_list})
-
 
 
 def add_venue(request):
@@ -88,11 +106,9 @@ def add_venue(request):
     return render(request, 'events/add_venue.html', {'form':form, 'submitted':submitted})
 
 
-
 def all_events(request):
     event_list = Event.objects.all().order_by('name')
     return render(request, 'events/event_list.html', {'event_list':event_list})
-
 
 
 def home(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
