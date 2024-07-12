@@ -22,16 +22,29 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'list-venues' %}">Venues</a>
           </li>
+
+
           <li class="nav-item">
             <a class="nav-link" href="{% url 'venue_text' %}">Venue File</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'venue_csv' %}">CSV File</a>
           </li>
-           
+          
           <li class="nav-item">
             <a class="nav-link" href="{% url 'venue_pdf' %}">PDF File</a>
           </li>
+           
+          {% if user.is_authenticated %}
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Logout</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
+          </li>
+          {% endif %}
            
           
         </ul>
