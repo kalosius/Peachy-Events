@@ -2,6 +2,9 @@
 
 {% block content %}
 
+{% if user.is_authenticated %}
+
+
     <h1>Edit Venue </h1>
     <form action="" method="POST">
         {% csrf_token %}
@@ -10,6 +13,13 @@
     <input type="submit" value="Update" class="btn btn-secondary">
 </form>
 
+{% else %}
+
+<h1>Sorry! You Must Be Logged In To View This page</h1>
+
+<a href="{% url 'login' %}">Login Here</a>
+
+{% endif %}
 
 
 {% endblock %}
