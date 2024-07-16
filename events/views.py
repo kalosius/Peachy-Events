@@ -20,6 +20,19 @@ from reportlab.lib.pagesizes import letter
 # Import Pagination Stuff
 from django.core.paginator import Paginator
 
+# Create My Events Page
+def my_events(request):
+    if request.user.is_authenticated:
+        me = request.user.id
+        events = Event.objects.filter(attendees=me)
+        return render(request, 'events/my_events.html', {"events":events})
+    else:
+        messages.success(request, "You aren't Authorized To View This Page")
+        return redirect('home')
+
+
+
+
 # Generate PDF files for venues
 def venue_pdf(request):
     # Create Bytestream buffer
