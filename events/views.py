@@ -231,7 +231,7 @@ def all_events(request):
 
 
 def home(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
-    name = "Aloisius"
+    name = request.user
     month = month.capitalize()
     # Convert month from name to number
     month_number = list(calendar.month_name).index(month)
@@ -244,6 +244,10 @@ def home(request, year=datetime.now().year, month=datetime.now().strftime('%B'))
     now = datetime.now()
     current_year = now.year
 
+    # Query the events Model For Dates
+    event_list = Event.objects.filter(event_date__year = year, event_date__month = month_number)
+
     # Get current Time
     time = now.strftime('%I:%M %p')
-    return render(request, 'events/home.html', {'name':name, 'year':year, 'month':month, 'month_number':month_number, 'cal':cal, 'current_year':current_year, 'time':time})
+    return render(request, 'events/home.html', {'name':name, 'year':year, 'month':month, 'month_number':month_number, 'cal':cal, 'current_year':current_year, 'time':time, 'event_list':event_list})
+
