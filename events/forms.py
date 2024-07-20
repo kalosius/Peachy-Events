@@ -9,12 +9,12 @@ class EventFormAdmin(forms.ModelForm):
         model = Event
         fields = ('name', 'event_date', 'venue', 'manager','attendees', 'description')
         labels = {
-            'name':'',
-            'event_date':'YYYY-MM-DD HH:MM:SS',
-            'venue':'Venue',
-            'manager':'Manager',
-            'attendees':'Attendees',
-            'description':'',
+            'name': '',
+            'event_date': 'YYYY-MM-DD HH:MM:SS',
+            'venue': 'Venue',
+            'manager': 'Manager',
+            'attendees': 'Attendees',
+            'description': '',
         }
 
         widgets = {
@@ -32,11 +32,11 @@ class EventForm(forms.ModelForm):
         model = Event
         fields = ('name', 'event_date', 'venue', 'attendees', 'description')
         labels = {
-            'name':'',
-            'event_date':'YYYY-MM-DD HH:MM:SS',
-            'venue':'Venue',
-            'attendees':'Attendees',
-            'description':'',
+            'name': '',
+            'event_date': 'YYYY-MM-DD HH:MM:SS',
+            'venue': 'Venue',
+            'attendees': 'Attendees',
+            'description': '',
         }
 
         widgets = {
@@ -53,12 +53,13 @@ class EventForm(forms.ModelForm):
 class VenueForm(forms.ModelForm):
     class Meta:
         model = Venue
-        fields = ('name', 'address', 'phone', 'email_address')
+        fields = ('name', 'address', 'phone', 'email_address', 'venue_image')
         labels = {
-             'name':'',
-            'address':'',
-            'phone':'',
-            'email_address':'',
+            'name': '',
+            'address': '',
+            'phone': '',
+            'email_address': '',
+            'venue_image': ''
         }
 
         widgets = {

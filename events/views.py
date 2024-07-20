@@ -20,6 +20,35 @@ from reportlab.lib.pagesizes import letter
 # Import Pagination Stuff
 from django.core.paginator import Paginator
 
+# Admin approval page
+def admin_approval(request):
+
+    # Get The Venues
+    venue_list = Venue.objects.all()
+
+
+    # Get Counts
+    event_count = Event.objects.all().count()
+    venue_count = Venue.objects.all().count()
+    user_count = User.objects.all().count()
+
+    event_list = Event.objects.all().order_by('-event_date')
+    if request.user.is_superuser:
+        if request.method == 'POST':
+            id_list = request.POST.getlist('boxes')
+            # Uncheck All Events
+            event_list.update(approved=False)
+            # Update the Database
+            for x in id_list:
+                Event.objects.filter(pk=int(x)).update(approved=True)
+            messages.success(request, "Event List Approval Has Been Updated!")
+            return redirect('list-events')
+        else:
+            return render(request, 'events/admin_approval.html', {'event_list':event_list, 'event_count':event_count, 'venue_count':venue_count, 'user_count':user_count, 'venue_list':venue_list})
+    else:
+        messages.success(request, "You Aren't Authorized To View This Page")
+        return redirect('home')
+
 
 # Create My Events Page
 def my_events(request):
@@ -162,7 +191,7 @@ def add_event(request):
 
 def update_venue(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
-    form = VenueForm(request.POST or None, instance=venue)
+    form = VenueForm(request.POST or None, request.FILES or None, instance=venue)
     if form.is_valid():
         form.save()
         return redirect('list-venues')
@@ -199,7 +228,7 @@ def list_venues(request):
     venue_list = Venue.objects.all()
 
     # Setup Pagination
-    p = Paginator(Venue.objects.all(), 2)
+    p = Paginator(Venue.objects.all().order_by('-id'), 2)
     page = request.GET.get('page')
     venues = p.get_page(page)
     nums = "a" * venues.paginator.num_pages
@@ -210,7 +239,7 @@ def list_venues(request):
 def add_venue(request):
     submitted = False
     if request.method == 'POST':
-        form = VenueForm(request.POST) 
+        form = VenueForm(request.POST, request.FILES)
         if form.is_valid():
             venue = form.save(commit=False)
             venue.owner = request.user.id #Logged in user  
