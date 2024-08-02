@@ -20,6 +20,8 @@ from reportlab.lib.pagesizes import letter
 # Import Pagination Stuff
 from django.core.paginator import Paginator
 
+
+
 # Admin approval page
 def admin_approval(request):
 

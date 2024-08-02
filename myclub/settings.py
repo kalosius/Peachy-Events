@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-^dy52liwm$a6s!6(j#py0q)l1zf!om_f8nnv7s+49uc8^owwzp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://home-events.up.railway.app/', 'home-events.up.railway.app']
+ALLOWED_HOSTS = ['https://home-events.up.railway.app/', 'home-events.up.railway.app', 'localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = ['https://home-events.up.railway.app/']
 
 
